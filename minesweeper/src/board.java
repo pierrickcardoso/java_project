@@ -1,11 +1,22 @@
 import java.util.Random;
 public class board {
+    /*  
+     * This class represents the board of the minesweeper game.
+     * It contains methods to initialize the board, place bombs,
+     * reveal cells, flag cells, and check for win conditions.
+     * @author pierrick cardoso
+     * @param height the height of the board
+     * @param witdh the width of the board
+     * @param amout_bomb the number of bombs on the board
+     * 
+     */
     private Random rand = new Random();
     private int height;
     private int witdh;
     private int amout_bomb;
     private cell [][] board ;
     private boolean bombsPlaced = false;
+    // Constructor to initialize the board with given height, width, and number of bombs
     public board(int height , int witdh , int amout_bomb){
         this.height=height;
         this.witdh=witdh;
@@ -17,6 +28,7 @@ public class board {
 
             }
         }}
+    // Method to place bombs on the board, ensuring that the first cell clicked is not a bomb
         public void place_bomb(int init_i,int init_j){
         int bomb_place=0;
         while (bomb_place!=this.amout_bomb){
@@ -29,9 +41,10 @@ public class board {
             }}
         }
     }
-
+    // Method to check if a cell is within the grid boundaries
     public boolean is_in_the_grid(int x , int y ){
 		return 0 <= x && x< this.witdh && 0 <= y && y < this.height ;}
+    // Method to get all neighboring cells of a given cell
     public cell[] all_neighboor_of(int i , int j){
         cell[] res = new cell[8];
         int idx = 0;
@@ -47,6 +60,7 @@ public class board {
         }
         return res;
     }
+    // Method to flag a cell, marking it as potentially containing a bomb
     public void flag(int i, int j ){
         if (!is_in_the_grid(j, i)) {
             return;}
@@ -55,10 +69,9 @@ public class board {
         }
 
     }
-
+    // Method to play the game by revealing a cell and checking for bombs
     public void play(int i , int j) throws BombHereException{
         if (!is_in_the_grid(j, i)) return;
-        // place bombs on first move to ensure the first revealed cell is never a bomb
         if (!bombsPlaced) {
             place_bomb(i, j);
             bombsPlaced = true;
@@ -69,14 +82,12 @@ public class board {
         if (this.board[i][j].get_bomb_status()){
             throw new BombHereException("There is a bomb here you lose");
         } else {
-            // count neighboring bombs (increment the cell's counter)
             for (cell elem : all_neighboor_of(i, j)){
                 if (elem == null) continue;
                 if (elem.get_bomb_status()){
                     this.board[i][j].increase_bomb();
                 }
             }
-            // if no neighboring bombs, reveal neighbors recursively
             if (this.board[i][j].get_bomb_neighboor() == 0){
                 for (int x=-1;x<=1;x++){
                     for (int y=-1;y<=1;y++){
@@ -92,6 +103,7 @@ public class board {
             }
         }
     }
+    // Method to check if the player has won the game
     public boolean is_win(){
         for (int i=0;i<this.height;i++){
             for (int j = 0; j < this.witdh; j++) {
@@ -104,6 +116,7 @@ public class board {
         }
         return true;
     }
+    // Method to display the current state of the board
     public String display(){
         String res = "";
         for (int i = 0; i < this.height; i++) {
@@ -113,9 +126,9 @@ public class board {
                     res=res+'/';
                 }
                 else if (!c.get_reveal_status()) {
-                    res=res+"."; // hidden
+                    res=res+"."; 
                 } else if (c.get_bomb_status()) {
-                    res=res+'*'; // bomb 
+                    res=res+'*'; 
                     }
                 else {
                     int n = c.get_bomb_neighboor();
