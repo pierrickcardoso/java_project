@@ -1,5 +1,5 @@
 # java_project
-List of my Java project done outside of my lessons
+List of my Java project 
 
 
 Minesweeper : The classic minesweeper game 
